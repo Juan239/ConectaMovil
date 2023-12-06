@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp"
+    tools:context=".registroUsuarioActivity">
+
+    <TextView
+        android:id="@+id/textViewExamen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ConectaMovil"
+        android:gravity="center"
+        android:textSize="35sp"
+        android:textColor="#888888"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/textViewEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Correo Electrónico"
+        android:textSize="12sp"
+        android:textColor="#888888"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/ETcorreoR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Ingrese su correo electrónico"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre de usuario"
+        android:textSize="12sp"
+        android:textColor="#888888"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/ETnombreUsuarioR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Ingrese un nombre de usuario"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contraseña"
+        android:textSize="12sp"
+        android:textColor="#888888"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/ETpasswordR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Ingrese su contraseña"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnRegistrarse"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Registrarse"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ya tienes una cuenta? inicia sesión"
+        android:id="@+id/txtIniciarSesion"
+        android:layout_gravity="center"
+        android:layout_marginTop="4dp"/>
+
+</LinearLayout>
