@@ -1,6 +1,5 @@
-package com.example.examennacional;
+package com.example.examennacional.Vista;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,13 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.examennacional.Modelo.contacto;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.examennacional.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
 
 public class registroUsuarioActivity extends AppCompatActivity {
     private TextView iniciarSesion;
@@ -58,11 +58,11 @@ public class registroUsuarioActivity extends AppCompatActivity {
                 String username = nombreUsuario.getText().toString();
 
                 contacto usuario = new contacto(username, email);
-                reference.child(username).setValue(usuario);
 
                 mAuth.createUserWithEmailAndPassword(email, pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        reference.child(Objects.requireNonNull(mAuth.getUid())).setValue(usuario);
                         Toast.makeText(registroUsuarioActivity.this, "Registro de usuario exitoso", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(registroUsuarioActivity.this, listaContactosActivity.class));
                         finish();

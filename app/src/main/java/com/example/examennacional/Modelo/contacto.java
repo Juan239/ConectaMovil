@@ -6,6 +6,10 @@ public class contacto {
     public contacto() {
     }
 
+    public contacto(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
     public contacto(String nombreUsuario, String correoElectronico) {
         this.nombreUsuario = nombreUsuario;
         this.correoElectronico = correoElectronico;

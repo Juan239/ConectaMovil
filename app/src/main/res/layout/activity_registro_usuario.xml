@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="25dp"
-    tools:context=".registroUsuarioActivity">
+    tools:context=".Vista.registroUsuarioActivity">
 
     <TextView
         android:id="@+id/textViewExamen"
