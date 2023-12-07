@@ -59,7 +59,7 @@ public class chatActivity extends AppCompatActivity {
         fotoPerfil = findViewById(R.id.fotoPerfilChat);
 
         currentUser = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        checkIfImageExists(currentUser);
+        //checkIfImageExists(currentUser);
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -174,10 +174,6 @@ public class chatActivity extends AppCompatActivity {
                     // El nodo no existe, maneja este caso según tus necesidades
                     Toast.makeText(chatActivity.this, "Nodo no encontrado", Toast.LENGTH_SHORT).show();
                 }
-
-
-
-
             }
 
             @Override
