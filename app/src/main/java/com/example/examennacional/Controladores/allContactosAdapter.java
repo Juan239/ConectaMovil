@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.examennacional.Modelo.contacto;
 import com.example.examennacional.R;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,9 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class allContactosAdapter extends RecyclerView.Adapter<allContactosAdapter.ViewHolder> {
@@ -57,8 +55,10 @@ public class allContactosAdapter extends RecyclerView.Adapter<allContactosAdapte
         private TextView txtCorreoContacto;
         private ImageView btnAgregar;
         private FirebaseDatabase database;
-        private DatabaseReference referenceNewContacto;
+        private DatabaseReference referenceNewContacto, referenceUsuarios, referenceId;
         private FirebaseAuth mAuth;
+
+        private String nombreUsuario;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,12 +68,14 @@ public class allContactosAdapter extends RecyclerView.Adapter<allContactosAdapte
             database = FirebaseDatabase.getInstance();
             mAuth = FirebaseAuth.getInstance();
 
-            // Obtén la referencia al nodo "contactos" dentro del nodo con el mismo nombre que el UID del usuario actual
-            referenceNewContacto = database.getReference("contactos").child(Objects.requireNonNull(mAuth.getUid()));
+
 
             btnAgregar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Obtén la referencia al nodo "contactos" dentro del nodo con el mismo nombre que el UID del usuario actual
+                    referenceNewContacto = database.getReference("contactos").child(mAuth.getUid());
+
                     final String nuevoContacto = txtNombreContacto.getText().toString();
 
                     // Verifica que el campo no esté vacío y no sea el valor predeterminado
@@ -102,6 +104,7 @@ public class allContactosAdapter extends RecyclerView.Adapter<allContactosAdapte
                     }
                 }
             });
+
         }
 
         public void bind(contacto contacto) {

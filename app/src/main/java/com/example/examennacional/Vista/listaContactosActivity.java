@@ -43,6 +43,8 @@ public class listaContactosActivity extends AppCompatActivity {
         btnAgregarContacto = findViewById(R.id.btnAgregarContacto);
         btnEditarPerfil = findViewById(R.id.btnEditarUsuario);
 
+
+
         // Obtén los datos de Firebase y configura el RecyclerView
         obtenerDatosFirebase();
 

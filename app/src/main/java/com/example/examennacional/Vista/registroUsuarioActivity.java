@@ -62,9 +62,12 @@ public class registroUsuarioActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(email, pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        reference.child(Objects.requireNonNull(mAuth.getUid())).setValue(usuario);
+                        reference.child(username).setValue(usuario);
                         Toast.makeText(registroUsuarioActivity.this, "Registro de usuario exitoso", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(registroUsuarioActivity.this, listaContactosActivity.class));
+                        Intent intent = new Intent(registroUsuarioActivity.this, listaContactosActivity.class);
+                        String uid = mAuth.getCurrentUser().getUid();
+                        database.getReference().child("IdUsuarios").child(uid).setValue(username);
+                        startActivity(intent);
                         finish();
                     }
                 });

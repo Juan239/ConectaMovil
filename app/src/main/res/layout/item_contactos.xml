@@ -15,13 +15,14 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-            <ImageView
+            <!--<ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center"
+                android:id="@+id/foto_perfil_lista"
                 android:src="@drawable/foto_perfil"
-                android:contentDescription="Foto de perfil" />
+                android:contentDescription="Foto de perfil" /> -->
 
             <!-- Aquí puedes agregar TextView u otros widgets para mostrar la información del contacto -->
             <TextView
