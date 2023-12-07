@@ -1,7 +1,7 @@
 package com.example.examennacional.Modelo;
 
 public class contacto {
-    private String nombreUsuario, correoElectronico;
+    private String nombreUsuario, correoElectronico, telefono;
 
     public contacto() {
     }
@@ -10,9 +10,18 @@ public class contacto {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public contacto(String nombreUsuario, String correoElectronico) {
+    public contacto(String nombreUsuario, String correoElectronico, String telefono) {
         this.nombreUsuario = nombreUsuario;
         this.correoElectronico = correoElectronico;
+        this.telefono = telefono;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public String getNombreUsuario() {

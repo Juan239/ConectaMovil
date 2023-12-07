@@ -7,31 +7,43 @@
     android:layout_height="match_parent"
     tools:context=".chatActivity">
 
+    <ImageView
+        android:id="@+id/fotoPerfilChat"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/foto_perfil"
+        app:layout_constraintEnd_toStartOf="@+id/nombreReceptor"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/nombreReceptor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="28dp"
+        android:text="asd"
         android:textSize="20sp"
-        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.177"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_margin="50dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="50dp"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
         app:layout_constraintTop_toBottomOf="@id/nombreReceptor"
-        app:layout_constraintBottom_toTopOf="@id/linearLayout">
+        tools:layout_editor_absoluteX="49dp">
 
         <LinearLayout
             android:id="@+id/chatMessageLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical" />
     </ScrollView>
 
     <LinearLayout

@@ -50,8 +50,26 @@
         android:id="@+id/ETnombreUsuarioR"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
         android:hint="Ingrese un nombre de usuario"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewTelefono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Teléfono"
+        android:textSize="12sp"
+        android:textColor="#888888"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="4dp"/>
+
+    <EditText
+        android:id="@+id/ETtelefonoR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Ingrese un número de teléfono"
         android:layout_marginBottom="16dp"/>
 
     <TextView

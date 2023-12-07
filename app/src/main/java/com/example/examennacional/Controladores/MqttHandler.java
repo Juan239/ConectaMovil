@@ -35,6 +35,13 @@ public class MqttHandler {
             e.printStackTrace();
         }
     }
+    public void unsubscribe(String topic) {
+        try {
+            client.unsubscribe(topic);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void publish(String topic, String message) {
         try {

@@ -27,18 +27,18 @@
         android:id="@+id/textViewUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nuevo nombre de usuario"
+        android:text="Nuevo número de teléfono"
         android:textSize="12sp"
         android:textColor="@color/black"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="4dp"/>
 
     <EditText
-        android:id="@+id/ETNuevoNombreUsuario"
+        android:id="@+id/ETNuevoTelefono"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:inputType="textEmailAddress"
-        android:hint="Ingrese su nombre de usuario"
+        android:hint="Ingrese su número de teléfono"
         android:layout_marginBottom="16dp"/>
 
     <Button
