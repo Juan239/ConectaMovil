@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,12 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.examennacional.Controladores.MqttHandler;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -33,9 +39,8 @@ import java.util.Objects;
 public class chatActivity extends AppCompatActivity {
     private TextView nombreReceptor;
     private static final String BROKER_URL = "tcp://test.mosquitto.org:1883";
-
     private MqttHandler mqttHandler;
-    private ImageView btnEnviarMensaje;
+    private ImageView btnEnviarMensaje, fotoPerfil;
     private EditText mensajeET;
     private DatabaseReference databaseReference, referenceid_usuario;
     FirebaseDatabase firebaseDatabase;
@@ -48,11 +53,13 @@ public class chatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         nombreReceptor = findViewById(R.id.nombreReceptor);
         mAuth = FirebaseAuth.getInstance();
-        CLIENT_ID = mAuth.getUid();
+        CLIENT_ID = mAuth.getCurrentUser().getUid();
         btnEnviarMensaje = findViewById(R.id.btnEnviarMensaje);
         mensajeET = findViewById(R.id.ETmensaje);
+        fotoPerfil = findViewById(R.id.fotoPerfilChat);
 
         currentUser = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        checkIfImageExists(currentUser);
 
 
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -251,5 +258,48 @@ public class chatActivity extends AppCompatActivity {
         // Guarda el mensaje en el nodo correspondiente
         databaseReference.child(messageId).child("sender").setValue(sender);
         databaseReference.child(messageId).child("message").setValue(message);
+    }
+
+    private void checkIfImageExists(String nombreImagenUsuario) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("images").child(nombreImagenUsuario);
+
+
+        // Verifica la existencia del archivo
+        storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+                final long ONE_MEGABYTE = 1024 * 1024;
+                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+
+                        //Agregar imagen al imageView
+                        // Convierte los bytes en un Bitmap (o en el formato que necesites)
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                        // Guarda el Bitmap en una variable global o según tus necesidades
+                        // Puedes mostrar el Bitmap en una ImageView o realizar otras operaciones
+                        // dependiendo de tus requerimientos.
+                        // Por ejemplo, si necesitas mostrar la imagen en un ImageView:
+
+                        fotoPerfil.setImageBitmap(bitmap);
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Maneja la falla según tus necesidades
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // El archivo no existe
+                // Puedes manejar esta situación según tus necesidades
+            }
+        });
     }
 }

@@ -40,11 +40,11 @@ import java.io.ByteArrayOutputStream;
 
 public class usuarioActivity extends AppCompatActivity {
     private FirebaseDatabase database;
-    private DatabaseReference referenceUsuario, referenceUsuario2;
+    private DatabaseReference referenceUsuario, referencetelefono, reference2;
     private StorageReference storageReference;
     private FirebaseStorage storage;
     private ImageView fotoPerfil;
-    private EditText nuevoNombreUsuario;
+    private EditText nuevoTelefono;
     private Button btnGuardarDatos;
     private ActivityResultLauncher<Intent> galleryLauncher;
 
@@ -57,27 +57,27 @@ public class usuarioActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
 
         fotoPerfil = findViewById(R.id.fotoPerfil);
-        nuevoNombreUsuario = findViewById(R.id.ETNuevoNombreUsuario);
+        nuevoTelefono = findViewById(R.id.ETNuevoTelefono);
         btnGuardarDatos = findViewById(R.id.btnGuardarPerfil);
 
         // Obtén la instancia de FirebaseAuth y usuario actual
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String userId = currentUser.getUid();
-        referenceUsuario = FirebaseDatabase.getInstance().getReference("usuarios").child(userId);
-        referenceUsuario2 = database.getReference("usuarios").child(userId);
-        storageReference = FirebaseStorage.getInstance().getReference().child("images").child(userId);
 
-        // Inicializar ActivityResultLauncher
-        galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        handleImageSelection(result.getData().getData());
-                    }
-                });
 
         if (currentUser != null) {
-            obtenerNombreUsuarioActual(userId);
+            String userId = currentUser.getUid();
+            referenceUsuario = database.getReference("IdUsuarios");
+
+            // Inicializar ActivityResultLauncher
+            galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            handleImageSelection(result.getData().getData());
+                        }
+                    });
+
+            obtenerDatosUsuario(userId);
             checkIfImageExists(userId);
 
             // Abrir galería al presionar el imageView
@@ -85,8 +85,8 @@ public class usuarioActivity extends AppCompatActivity {
 
             // Guardar la información
             btnGuardarDatos.setOnClickListener(view -> {
-                subirImagenFirebase();
-                actualizarNombreUsuario();
+                subirImagenFirebase(userId);
+                actualizarNumeroUsuario(userId);
             });
         } else {
             startActivity(new Intent(usuarioActivity.this, listaContactosActivity.class));
@@ -107,11 +107,11 @@ public class usuarioActivity extends AppCompatActivity {
         }
     }
 
-    private void subirImagenFirebase() {
+    private void subirImagenFirebase(String userId) {
         // Tu código para subir la imagen a Firebase Storage
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String idUsuario = currentUser.getUid();
+        String idCorreo = currentUser.getUid();
         // Obtener la imagen del ImageView
 
         BitmapDrawable drawable = (BitmapDrawable) fotoPerfil.getDrawable();
@@ -123,7 +123,7 @@ public class usuarioActivity extends AppCompatActivity {
         byte[] data = baos.toByteArray();
 
         // Crear una referencia en Firebase Storage
-
+        storageReference = FirebaseStorage.getInstance().getReference().child("images").child(userId);
 
         // Subir la imagen a Firebase Storage
         UploadTask uploadTask = storageReference.putBytes(data);
@@ -144,41 +144,97 @@ public class usuarioActivity extends AppCompatActivity {
         });
     }
 
-    private void actualizarNombreUsuario() {
-        String nombreUsuario = nuevoNombreUsuario.getText().toString();
+    private void actualizarNumeroUsuario(String userId) {
+        String nuevoNumeroUsuario = nuevoTelefono.getText().toString();
 
         // Verifica que el campo no esté vacío y no sea el valor predeterminado
-        if (!nombreUsuario.isEmpty() && !nombreUsuario.equals("Nombre del Usuario")) {
-            referenceUsuario.child("nombreUsuario").setValue(nombreUsuario)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(usuarioActivity.this, "Se guardaron los datos correctamente", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(usuarioActivity.this, "No se pudieron guardar los cambios", Toast.LENGTH_SHORT).show());
+        if (!nuevoNumeroUsuario.isEmpty() && !nuevoNumeroUsuario.equals("Teléfono del Usuario")) {
+            DatabaseReference referenceIdUsuarios = database.getReference().child("IdUsuarios");
+
+            // Obtén la referencia al nombre de usuario usando el UID
+            referenceIdUsuarios.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // Obtiene el nombre de usuario asociado al UID
+                        String nombreUsuario = snapshot.getValue(String.class);
+
+                        if (nombreUsuario != null) {
+                            // Ahora, actualiza el valor del teléfono en el nodo "usuarios" usando el nombre de usuario
+                            DatabaseReference referenceUsuarios = database.getReference().child("usuarios");
+                            DatabaseReference referenciaUsuarioActual = referenceUsuarios.child(nombreUsuario);
+
+                            referenciaUsuarioActual.child("telefono").setValue(nuevoNumeroUsuario)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(usuarioActivity.this, "Se actualizó el número de teléfono correctamente", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(usuarioActivity.this, "No se pudo actualizar el número de teléfono", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(usuarioActivity.this, "No se encontró el nombre de usuario asociado al UID", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Maneja los errores si es necesario
+                    Log.e("UsuarioActivity", "Error en la lectura de datos: " + error.getMessage());
+                }
+            });
         } else {
-            Toast.makeText(usuarioActivity.this, "Ingresa un nombre de usuario válido", Toast.LENGTH_SHORT).show();
+            Toast.makeText(usuarioActivity.this, "Ingresa un número de teléfono válido", Toast.LENGTH_SHORT).show();
         }
     }
+    private void obtenerDatosUsuario(String userId) {
 
-    private void obtenerNombreUsuarioActual(String userId) {
-        referenceUsuario2 = database.getReference("usuarios").child(userId);
+        referencetelefono = database.getReference().child("usuarios");
 
-        referenceUsuario2.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference referenceIdUsuarios = database.getReference().child("IdUsuarios");
+
+        // Obtén la referencia al nombre de usuario usando el UID
+        referenceIdUsuarios.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Obtén el nombreUsuario del usuario actual
-                    String nombreUsuarioActual = snapshot.child("nombreUsuario").getValue(String.class);
+                    // Obtiene el nombre de usuario asociado al UID
+                    String nombreUsuario = snapshot.getValue(String.class);
 
-                    if (nombreUsuarioActual != null) {
-                        // Muestra el nombreUsuario en el EditText
-                        nuevoNombreUsuario.setText(nombreUsuarioActual);
-                        Log.d("UsuarioActivity", "Nombre de usuario obtenido exitosamente: " + nombreUsuarioActual);
+                    if (nombreUsuario != null) {
+                        referencetelefono.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    // Obtén el nombreUsuario del usuario actual
+
+                                    String numeroActual = snapshot.child(nombreUsuario).child("telefono").getValue(String.class);
+
+                                    if (numeroActual != null) {
+                                        // Muestra el nombreUsuario en el EditText
+                                        nuevoTelefono.setText(numeroActual);
+                                        Log.d("UsuarioActivity", "Telefono obtenido exitosamente: " + numeroActual);
+                                    } else {
+                                        Log.e("UsuarioActivity", "Telefono es nulo");
+                                        nuevoTelefono.setText("Error al obtener el telefono");
+                                    }
+                                } else {
+                                    // El usuario no existe en la base de datos, maneja según tus necesidades
+                                    Log.e("UsuarioActivity", "El telefono no existe en la base de datos");
+                                    nuevoTelefono.setText("telefono no encontrado");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                // Maneja los errores si es necesario
+                                Log.e("UsuarioActivity", "Error en la lectura de datos: " + error.getMessage());
+                                nuevoTelefono.setText("Error en la lectura de datos");
+                            }
+                        });
                     } else {
-                        Log.e("UsuarioActivity", "Nombre de usuario es nulo");
-                        nuevoNombreUsuario.setText("Error al obtener el nombre de usuario");
+                        Toast.makeText(usuarioActivity.this, "No se encontró el nombre de usuario asociado al UID", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    // El usuario no existe en la base de datos, maneja según tus necesidades
-                    Log.e("UsuarioActivity", "El usuario no existe en la base de datos");
-                    nuevoNombreUsuario.setText("Usuario no encontrado");
                 }
             }
 
@@ -186,24 +242,21 @@ public class usuarioActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 // Maneja los errores si es necesario
                 Log.e("UsuarioActivity", "Error en la lectura de datos: " + error.getMessage());
-                nuevoNombreUsuario.setText("Error en la lectura de datos");
             }
         });
     }
 
-
-
-    private void checkIfImageExists(String nombreImagenUsuario) {
+    private void checkIfImageExists(String imageName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("images").child(nombreImagenUsuario);
+        StorageReference storageRef2 = storage.getReference().child("images").child(imageName);
+        database = FirebaseDatabase.getInstance();
+        reference2 = database.getReference("IdUsuarios").child(imageName);
 
-
-        // Verifica la existencia del archivo
-        storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener() {
+        storageRef2.getMetadata().addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
                 final long ONE_MEGABYTE = 1024 * 1024;
-                storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                storageRef2.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
 
@@ -217,6 +270,7 @@ public class usuarioActivity extends AppCompatActivity {
                         // Por ejemplo, si necesitas mostrar la imagen en un ImageView:
                         ImageView imageView = findViewById(R.id.fotoPerfil);
                         imageView.setImageBitmap(bitmap);
+
 
 
                     }
@@ -234,9 +288,14 @@ public class usuarioActivity extends AppCompatActivity {
                 // Puedes manejar esta situación según tus necesidades
             }
         });
+
+
+
+
+
+
+
     }
-
-
 
 
 

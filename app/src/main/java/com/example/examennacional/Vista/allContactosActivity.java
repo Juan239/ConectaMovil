@@ -52,8 +52,9 @@ public class allContactosActivity extends AppCompatActivity {
                 for (DataSnapshot usuarioSnapshot : dataSnapshot.getChildren()) {
                     String nombreUsuario = usuarioSnapshot.child("nombreUsuario").getValue(String.class);
                     String correoElectronico = usuarioSnapshot.child("correoElectronico").getValue(String.class);
+                    String telefonoUsuario = usuarioSnapshot.child("telefono").getValue(String.class);
 
-                    contactoList.add(new contacto(nombreUsuario, correoElectronico));
+                    contactoList.add(new contacto(nombreUsuario, correoElectronico, telefonoUsuario));
                 }
 
                 // Configura el adaptador y el RecyclerView después de obtener los datos

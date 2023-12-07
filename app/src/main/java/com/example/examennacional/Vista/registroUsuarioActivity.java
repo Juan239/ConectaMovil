@@ -22,7 +22,7 @@ import java.util.Objects;
 
 public class registroUsuarioActivity extends AppCompatActivity {
     private TextView iniciarSesion;
-    private EditText correo, contrasenia, nombreUsuario;
+    private EditText correo, contrasenia, nombreUsuario, telefono;
     private Button btnRegistrarse;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
@@ -38,6 +38,7 @@ public class registroUsuarioActivity extends AppCompatActivity {
         correo = findViewById(R.id.ETcorreoR);
         contrasenia = findViewById(R.id.ETpasswordR);
         nombreUsuario = findViewById(R.id.ETnombreUsuarioR);
+        telefono = findViewById(R.id.ETtelefonoR);
         btnRegistrarse = findViewById(R.id.btnRegistrarse);
 
         mAuth = FirebaseAuth.getInstance();
@@ -56,8 +57,9 @@ public class registroUsuarioActivity extends AppCompatActivity {
                 String email = correo.getText().toString();
                 String pass = contrasenia.getText().toString();
                 String username = nombreUsuario.getText().toString();
+                String phone = telefono.getText().toString();
 
-                contacto usuario = new contacto(username, email);
+                contacto usuario = new contacto(username, email, phone);
 
                 mAuth.createUserWithEmailAndPassword(email, pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
