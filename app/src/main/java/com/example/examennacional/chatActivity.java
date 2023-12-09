@@ -76,7 +76,7 @@ public class chatActivity extends AppCompatActivity {
                     // Realiza acciones con valorUsuario
                     Intent intent = getIntent();
                     String nombreUsuarioReceptor =intent.getStringExtra("Nombre_receptor");
-                    Toast.makeText(chatActivity.this, "Nombre de usuario: " + usuarioActual+"chat"+nombreUsuarioReceptor, Toast.LENGTH_SHORT).show();
+
 
 
                     nombreReceptor.setText(nombreUsuarioReceptor);
